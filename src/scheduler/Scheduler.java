@@ -19,16 +19,19 @@ public class Scheduler extends Application {
     public static Stage stageController;
     public static Scene loginScene;
     public static Scene calendarScene;
+    public static Scene appointmentDetailsScene;
     
     @Override
     public void start(Stage stage) throws Exception {
         stageController = stage;
         Parent login = FXMLLoader.load(getClass().getResource("FXMLLoginPage.fxml"));
         Parent calendar = FXMLLoader.load(getClass().getResource("FXMLCalendarPage.fxml"));
+        Parent appointmentDetails = FXMLLoader.load(getClass().getResource("FXMLAppointmentDetails.fxml"));
         
         loginScene = new Scene(login);
         calendarScene = new Scene(calendar);
-        
+        appointmentDetailsScene = new Scene(appointmentDetails);
+                
         stage.setScene(loginScene);
         stage.show();
 

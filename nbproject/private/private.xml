@@ -3,18 +3,13 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Projects/School/Scheduler/src/scheduler/Database.java</file>
-            <file>file:/C:/Projects/School/Scheduler/src/resources/Customer.java</file>
-            <file>file:/C:/Projects/School/Scheduler/src/CalendarResources/WorkingMonth.java</file>
-            <file>file:/C:/Projects/School/Scheduler/src/CalendarResources/DayOfMonth.java</file>
-            <file>file:/C:/Projects/School/Scheduler/src/resources/City.java</file>
-            <file>file:/C:/Projects/School/Scheduler/src/scheduler/Scheduler.java</file>
-            <file>file:/C:/Projects/School/Scheduler/src/resources/Address.java</file>
-            <file>file:/C:/Projects/School/Scheduler/src/resources/Country.java</file>
-            <file>file:/C:/Projects/School/Scheduler/src/resources/UserInfo.java</file>
-            <file>file:/C:/Projects/School/Scheduler/src/resources/Appointment.java</file>
-            <file>file:/C:/Projects/School/Scheduler/src/scheduler/FXMLCalendarPageController.java</file>
-            <file>file:/C:/Projects/School/Scheduler/src/scheduler/FXMLLoginPageController.java</file>
+            <file>file:/Users/nicholasdrew/Projects/Scheduler/src/scheduler/FXMLAppointmentDetails.fxml</file>
+            <file>file:/Users/nicholasdrew/Projects/Scheduler/src/scheduler/Database.java</file>
+            <file>file:/Users/nicholasdrew/Projects/Scheduler/src/scheduler/FXMLAppointmentDetailsController.java</file>
+            <file>file:/Users/nicholasdrew/Projects/Scheduler/src/scheduler/Scheduler.java</file>
+            <file>file:/Users/nicholasdrew/Projects/Scheduler/src/scheduler/FXMLCalendarPageController.java</file>
+            <file>file:/Users/nicholasdrew/Projects/Scheduler/src/scheduler/FXMLLoginPageController.java</file>
+            <file>file:/Users/nicholasdrew/Projects/Scheduler/src/resources/Appointment.java</file>
         </group>
     </open-files>
 </project-private>

@@ -20,7 +20,13 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import CalendarResources.*;
+import java.io.IOException;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 import resources.Appointment;
 import resources.UserInfo;
 
@@ -37,6 +43,8 @@ public class FXMLCalendarPageController implements Initializable {
     private Button previousMonth;
     @FXML
     private TextField outputText;
+    @FXML
+    private Pane dailyAppointments;
     
     private WorkingMonth month = new WorkingMonth(); 
     
@@ -46,7 +54,7 @@ public class FXMLCalendarPageController implements Initializable {
         setCalendar();
 
             }
-
+    
     public void setCalendar(){
             
         monthLabel.setText("" + month.workingDate.getMonth() + " - " + month.workingDate.getYear());
@@ -86,10 +94,34 @@ public class FXMLCalendarPageController implements Initializable {
         Pane thisPane = (Pane)e.getSource();
         int day = Integer.parseInt(thisPane.getId());
         System.out.println(day);
+        dailyAppointments.getChildren().clear();
         ArrayList<Appointment> todayAppt = month.getAppointmentsForDay(day);
         for(Appointment appt : todayAppt){
             System.out.println(appt.toString());
+            String apptName = appt.toString();
+            LocalDateTime start = appt.getStartTime();
+            DateTimeFormatter df = DateTimeFormatter.ofPattern("kk:mm");
+            String startFormat = start.format(df);
+            LocalDateTime end = appt.getEndTime();
+            String endFormat = end.format(df);
+            String apptTime = startFormat + "-" + endFormat;
+            
+            String labelInfo = apptName +" : " + apptTime;
+            Label anAppt = new Label(labelInfo);            
+            anAppt.setId(Integer.toString(appt.getAppointmentID()));
+            anAppt.setStyle("-fx-padding: 12 0 0 2;");
+            dailyAppointments.getChildren().add(anAppt);
+            anAppt.setOnMouseClicked(ev -> apptClicked(ev));
         }
+    }
+    
+    public void apptClicked(Event ev){
+        Label thisLabel = (Label)ev.getSource();
+        int apptID = Integer.parseInt(thisLabel.getId());
+  
+        Scheduler.changeScene(Scheduler.appointmentDetailsScene);
+        FXMLAppointmentDetailsController.initAppointment(apptID);
+        
     }
     
     public void nextMonth(){

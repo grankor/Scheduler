@@ -7,7 +7,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane id="AnchorPane" prefHeight="761.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="scheduler.FXMLCalendarPageController">
+<AnchorPane id="AnchorPane" fx:id="dailyAppointments" prefHeight="761.0" prefWidth="1242.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="scheduler.FXMLCalendarPageController">
    <children>
       <GridPane fx:id="calendarGrid" gridLinesVisible="true" layoutX="30.0" layoutY="47.0" prefHeight="507.0" prefWidth="940.0">
         <columnConstraints>
@@ -116,5 +116,11 @@
       <Button fx:id="previousMonth" layoutX="350.0" layoutY="12.0" mnemonicParsing="false" onAction="#prevMonth" text="&lt;-" /> 
       <Button fx:id="nextMonth" layoutX="618.0" layoutY="12.0" mnemonicParsing="false" onAction="#nextMonth" text="-&gt;" />
       <TextField fx:id="outputText" layoutX="158.0" layoutY="706.0" prefHeight="27.0" prefWidth="685.0" />
+      <Pane fx:id="dailyAppointments" layoutX="1002.0" layoutY="74.0" prefHeight="603.0" prefWidth="200.0" />
+      <Label fx:id="appointmentsLabel" layoutX="1008.0" layoutY="47.0" prefHeight="27.0" prefWidth="200.0" text="Daily Appointments" textAlignment="CENTER" underline="true">
+         <font>
+            <Font size="20.0" />
+         </font>
+      </Label>
    </children>
 </AnchorPane>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+
+<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8" fx:controller="scheduler.FXMLAppointmentDetailsController">
+   <children>
+      <Label alignment="CENTER" layoutX="245.0" layoutY="14.0" text="Appointment">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+      <Label layoutX="145.0" layoutY="45.0" text="Customer Name" />
+      <Label layoutX="145.0" layoutY="62.0" text="Type of Appointment" />
+      <Label layoutX="145.0" layoutY="79.0" text="Customer Name" />
+      <Label layoutX="145.0" layoutY="96.0" text="Consultant" />
+      <Label layoutX="145.0" layoutY="113.0" text="Location" />
+      <Label layoutX="145.0" layoutY="130.0" text="Description" />
+      <Label layoutX="145.0" layoutY="147.0" text="Contact" />
+      <Label layoutX="147.0" layoutY="164.0" text="Start Time" />
+      <Label layoutX="147.0" layoutY="181.0" text="End Time" />
+   </children>
+</AnchorPane>
