@@ -20,6 +20,7 @@ public class Scheduler extends Application {
     public static Scene loginScene;
     public static Scene calendarScene;
     public static Scene appointmentDetailsScene;
+    public static Scene currentScene;
     
     @Override
     public void start(Stage stage) throws Exception {
@@ -38,7 +39,7 @@ public class Scheduler extends Application {
     }
     public static void changeScene(Scene newScene){
         stageController.setScene(newScene);
-        stageController.show();
+        stageController.show();        
     }
 
     /**

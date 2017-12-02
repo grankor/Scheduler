@@ -46,21 +46,34 @@ public class FXMLCalendarPageController implements Initializable {
     @FXML
     private Pane dailyAppointments;
     
-    private WorkingMonth month = new WorkingMonth(); 
+    private static GridPane calGrid;
+    private static Label mntLabel;
+    private static Button nxtMonth;
+    private static Button prvMonth;
+    private static TextField outputTxt;
+    private static Pane dlyAppts;
+    
+    private static WorkingMonth month = new WorkingMonth(); 
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        calGrid = calendarGrid;
+        mntLabel = monthLabel;
+        nxtMonth = nextMonth;
+        prvMonth = previousMonth;
+        outputTxt = outputText;
+        dlyAppts = dailyAppointments;
+        
         month.setWorkingDate(LocalDateTime.now());
         setCalendar();
-
             }
     
-    public void setCalendar(){
-            
-        monthLabel.setText("" + month.workingDate.getMonth() + " - " + month.workingDate.getYear());
-        outputText.setText("" + month.firstDay);
+    public static void setCalendar(){
+        dlyAppts.getChildren().clear();
+        mntLabel.setText("" + month.workingDate.getMonth() + " - " + month.workingDate.getYear());
+        outputTxt.setText("" + month.firstDay);
         for(int i=0; i < 42;i++){
-            Pane spot = (Pane)calendarGrid.getChildren().get(i);
+            Pane spot = (Pane)calGrid.getChildren().get(i);
             spot.getChildren().clear();
             spot.setId(null);
         }
@@ -80,7 +93,7 @@ public class FXMLCalendarPageController implements Initializable {
             numOfAppts.setText("Appointments: " + numAppts);
             }
             numOfAppts.setStyle("-fx-padding: 12 0 0 2;");
-            Pane spot = (Pane)calendarGrid.getChildren().get(i);
+            Pane spot = (Pane)calGrid.getChildren().get(i);
             spot.getChildren().add(dayNum);
             spot.getChildren().add(numOfAppts);
             spot.setId(Integer.toString(incDay));            
@@ -90,11 +103,11 @@ public class FXMLCalendarPageController implements Initializable {
         
     }
     
-    private void clicked(Event e){
+    private static void clicked(Event e){
         Pane thisPane = (Pane)e.getSource();
         int day = Integer.parseInt(thisPane.getId());
         System.out.println(day);
-        dailyAppointments.getChildren().clear();
+        dlyAppts.getChildren().clear();
         ArrayList<Appointment> todayAppt = month.getAppointmentsForDay(day);
         for(Appointment appt : todayAppt){
             System.out.println(appt.toString());
@@ -110,12 +123,12 @@ public class FXMLCalendarPageController implements Initializable {
             Label anAppt = new Label(labelInfo);            
             anAppt.setId(Integer.toString(appt.getAppointmentID()));
             anAppt.setStyle("-fx-padding: 12 0 0 2;");
-            dailyAppointments.getChildren().add(anAppt);
+            dlyAppts.getChildren().add(anAppt);
             anAppt.setOnMouseClicked(ev -> apptClicked(ev));
         }
     }
     
-    public void apptClicked(Event ev){
+    public static void apptClicked(Event ev){
         Label thisLabel = (Label)ev.getSource();
         int apptID = Integer.parseInt(thisLabel.getId());
   
@@ -134,7 +147,7 @@ public class FXMLCalendarPageController implements Initializable {
         month.setWorkingDate(temp);
         setCalendar();
     }
-    private int checkDayOfWeek(String dayOfWeek){
+    private static int checkDayOfWeek(String dayOfWeek){
         switch(dayOfWeek){
             case "sunday": 
                 return 0;               

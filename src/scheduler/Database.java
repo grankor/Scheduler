@@ -62,7 +62,7 @@ public class Database {
                 Statement stmt4 = conn.createStatement();
                 Statement stmt5 = conn.createStatement();
                                 
-                ResultSet apptrs = stmt.executeQuery("SELECT appointmentId,customerId,title,description,location,contact,url,start,end FROM U01JJx.appointment");
+                ResultSet apptrs = stmt.executeQuery("SELECT appointmentId,customerId,title,description,location,contact,url,start,end,createdBy FROM U01JJx.appointment");
                 ResultSet addrs = stmt2.executeQuery("SELECT addressId, address, address2, cityId, postalCode, phone FROM U01JJx.address");
                 ResultSet custrs= stmt3.executeQuery("SELECT customerId,customerName,addressId,active FROM U01JJx.customer");
                 ResultSet cityrs = stmt4.executeQuery("SELECT cityId, city, countryId FROM U01JJx.city");
@@ -76,6 +76,7 @@ public class Database {
                     String contact = apptrs.getString("contact");
                     String appUrl = apptrs.getString("url");
                     String startTimeString = apptrs.getString("start");
+                    String createdBy = apptrs.getString("createdBy");
                     startTimeString = startTimeString.substring(0, 19);
                     DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd kk:mm:ss");
                     LocalDateTime ldtStart = LocalDateTime.parse(startTimeString, df);
@@ -92,7 +93,8 @@ public class Database {
                     appt.setContact(contact);
                     appointments.add(appt);
                     appt.setStartTime(ldtStart);
-                    appt.setEndTime(ldtEnd);                    
+                    appt.setEndTime(ldtEnd);
+                    appt.setConsultant(createdBy);
                 }            
                 UserInfo.setAppointments(appointments);
                 while(custrs.next()){
@@ -135,7 +137,9 @@ public class Database {
                 countryrs.close();
                 stmt.close();
                 conn.close();
+                Scheduler.currentScene = Scheduler.calendarScene;
                 Scheduler.changeScene(Scheduler.calendarScene);
+                FXMLCalendarPageController.setCalendar();
              
              } catch (SQLException e) {
              System.out.println("SQLException: "+e.getMessage());
@@ -143,6 +147,36 @@ public class Database {
              System.out.println("VendorError: "+e.getErrorCode());
 
              }
+            
+            
     }
+    public void updateAppointment(Appointment appt) throws ClassNotFoundException{
+            Connection conn = null;
+            String driver = "com.mysql.jdbc.Driver";
+            String db = Database.getDatabaseName();
+            String url = "jdbc:mysql://52.206.157.109/" + db;
+            String user = Database.getUserName();
+            String pass = Database.getPassword();
+            try {
+                Class.forName(driver);
+                conn = DriverManager.getConnection(url,user,pass);
+                Statement stmt = conn.createStatement();
+                
+                //Need to update this to save the appointment
+                ResultSet saveAppt = stmt.executeQuery("SELECT appointmentId,customerId,title,description,location,contact,url,start,end,createdBy FROM U01JJx.appointment");
+                
+                
+                saveAppt.close();
+                stmt.close();
+                conn.close();
+                
+                
+                        } catch (SQLException e){
+                            System.out.println("SQLException: "+e.getMessage());
+                            System.out.println("SQLState: "+e.getSQLState());
+                            System.out.println("VendorError: "+e.getErrorCode());
+                        }
+            
+            }
     
 }

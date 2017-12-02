@@ -1,11 +1,54 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.text.*?>
 <?import java.lang.*?>
 <?import java.util.*?>
 <?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" fx:controller="scheduler.FXMLAppointmentDetailsController">
-    
+<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="scheduler.FXMLAppointmentDetailsController">
+   <children>
+      <Label fx:id="apptTitle" alignment="CENTER" layoutX="38.0" layoutY="14.0" prefHeight="27.0" prefWidth="521.0" text="Appointment">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+      
+      
+      <Label layoutX="145.0" layoutY="45.0" text="Customer Name" />
+      <Label layoutX="145.0" layoutY="75.0" text="Title" />
+      <Label layoutX="145.0" layoutY="105.0" text="Consultant" />
+      <Label layoutX="144.0" layoutY="135.0" text="Location" />
+      <Label layoutX="144.0" layoutY="165.0" text="Description" />
+      <Label layoutX="141.0" layoutY="199.0" text="Contact" />
+      <Label layoutX="140.0" layoutY="233.0" text="Start Time" />
+      <Label layoutX="142.0" layoutY="264.0" text="End Time" />
+      <Label fx:id="cname" layoutX="264.0" layoutY="45.0" prefHeight="17.0" prefWidth="167.0" />
+      <Label fx:id="apptType" layoutX="264.0" layoutY="75.0" prefHeight="17.0" prefWidth="167.0" />
+      <Label fx:id="consultant" layoutX="265.0" layoutY="106.0" prefHeight="17.0" prefWidth="167.0" />
+      <Label fx:id="location" layoutX="256.0" layoutY="136.0" prefHeight="17.0" prefWidth="167.0" />
+      <Label fx:id="description" layoutX="256.0" layoutY="165.0" prefHeight="17.0" prefWidth="167.0" />
+      <Label fx:id="contact" layoutX="256.0" layoutY="199.0" prefHeight="17.0" prefWidth="167.0" />
+      <Label fx:id="startTime" layoutX="256.0" layoutY="233.0" prefHeight="17.0" prefWidth="167.0" />
+      <Label fx:id="endTime" layoutX="256.0" layoutY="264.0" prefHeight="17.0" prefWidth="167.0" />
+      <Button fx:id="cancel" layoutX="375.0" layoutY="370.0" onAction="#cancel" text="Cancel" />
+      <Button fx:id="editButton" layoutX="219.0" layoutY="370.0" onAction="#editAppt" text="Edit" />
+      <TextField fx:id="titleInput" layoutX="256.0" layoutY="71.0" />
+      <TextField fx:id="locationInput" layoutX="256.0" layoutY="132.0" />
+      <TextField fx:id="descriptionInput" layoutX="256.0" layoutY="161.0" />
+      <Button fx:id="saveButton" layoutX="265.0" layoutY="370.0" onAction="#saveAppt" text="Save" visible="false" />
+      <MenuButton fx:id="custNameInput" layoutX="256.0" layoutY="41.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="149.0" text="Customer Name">
+        <items>
+          <MenuItem mnemonicParsing="false" text="Action 1" />
+          <MenuItem mnemonicParsing="false" text="Action 2" />
+        </items>
+      </MenuButton>
+      <ChoiceBox fx:id="startInput1" layoutX="256.0" layoutY="229.0" prefHeight="25.0" prefWidth="50.0" />
+      <ChoiceBox fx:id="endInput1" layoutX="256.0" layoutY="260.0" prefHeight="25.0" prefWidth="50.0" />
+      <ChoiceBox fx:id="startInput2" layoutX="315.0" layoutY="229.0" prefHeight="25.0" prefWidth="50.0" />
+      <ChoiceBox fx:id="endInput2" layoutX="315.0" layoutY="260.0" prefHeight="25.0" prefWidth="50.0" />
+      <DatePicker fx:id="dateSelectorInput" layoutX="253.0" layoutY="14.0" visible="false" />
+
+   </children>
 </AnchorPane>
