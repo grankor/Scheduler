@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+
+<AnchorPane id="AnchorPane" prefHeight="500.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8" fx:controller="scheduler.FXMLEditCustomerInfoController">
+   <children>
+      <Label layoutX="208.0" layoutY="14.0" text="Customer Information">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+      <MenuButton fx:id="customerMenu" layoutX="59.0" layoutY="37.0" mnemonicParsing="false" text="Customers">
+        <items>
+          <MenuItem mnemonicParsing="false" text="Action 1" />
+          <MenuItem mnemonicParsing="false" text="Action 2" />
+        </items>
+      </MenuButton>
+      <Button fx:id="doneButton" layoutX="441.0" layoutY="445.0" mnemonicParsing="false" text="Done" />
+      <Button fx:id="editButton" layoutX="75.0" layoutY="445.0" mnemonicParsing="false" text="Edit" />
+      <Button fx:id="saveButton" layoutX="162.0" layoutY="445.0" mnemonicParsing="false" text="Save" />
+      <Label layoutX="55.0" layoutY="86.0" text="Name:" />
+      <TextField fx:id="customerName" layoutX="103.0" layoutY="81.0" />
+      <Label layoutX="336.0" layoutY="73.0" text="Address:" />
+      <Label layoutX="300.0" layoutY="108.0" text="Address line 2:" />
+      <Label layoutX="315.0" layoutY="147.0" text="Postal Code:" />
+      <Label layoutX="298.0" layoutY="184.0" text="Phone Number:" />
+      <Label layoutX="364.0" layoutY="272.0" text="City:" />
+      <Label layoutX="338.0" layoutY="353.0" text="Country:" />
+      <MenuButton fx:id="cityMenu" layoutX="411.0" layoutY="223.0" mnemonicParsing="false" text="City">
+        <items>
+          <MenuItem mnemonicParsing="false" text="Action 1" />
+          <MenuItem mnemonicParsing="false" text="Action 2" />
+        </items>
+      </MenuButton>
+      <MenuButton fx:id="countryMenu" layoutX="411.0" layoutY="306.0" mnemonicParsing="false" text="Country">
+        <items>
+          <MenuItem mnemonicParsing="false" text="Action 1" />
+          <MenuItem mnemonicParsing="false" text="Action 2" />
+        </items>
+      </MenuButton>
+      <MenuButton fx:id="addressMenu" layoutX="421.0" layoutY="37.0" mnemonicParsing="false" text="Address">
+        <items>
+          <MenuItem mnemonicParsing="false" text="Action 1" />
+          <MenuItem mnemonicParsing="false" text="Action 2" />
+        </items>
+      </MenuButton>
+      <Button fx:id="newAddress" layoutX="520.0" layoutY="37.0" mnemonicParsing="false" text="New" />
+      <Label alignment="TOP_CENTER" contentDisplay="CENTER" layoutX="24.0" layoutY="164.0" prefHeight="191.0" prefWidth="228.0" text="Choose address from the right, or click 'New' to create a new address." textAlignment="CENTER" wrapText="true" />
+      <TextField fx:id="addressLine1" layoutX="409.0" layoutY="68.0" />
+      <TextField fx:id="addressLine2" layoutX="409.0" layoutY="103.0" />
+      <TextField fx:id="postalCode" layoutX="409.0" layoutY="142.0" />
+      <TextField fx:id="phoneNumber" layoutX="409.0" layoutY="179.0" />
+      <TextField fx:id="cityBox" layoutX="409.0" layoutY="267.0" />
+      <TextField fx:id="countryBox" layoutX="409.0" layoutY="348.0" />
+      <Button fx:id="newCity" layoutX="520.0" layoutY="223.0" mnemonicParsing="false" text="New" />
+      <Button fx:id="newCountry" layoutX="520.0" layoutY="306.0" mnemonicParsing="false" text="New" />
+      <Button fx:id="newCustomer" layoutX="187.0" layoutY="37.0" mnemonicParsing="false" text="New" />
+   </children>
+</AnchorPane>

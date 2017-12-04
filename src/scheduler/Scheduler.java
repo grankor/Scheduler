@@ -20,7 +20,9 @@ public class Scheduler extends Application {
     public static Scene loginScene;
     public static Scene calendarScene;
     public static Scene appointmentDetailsScene;
+    public static Scene editCustomerScene;
     public static Scene currentScene;
+    
     
     @Override
     public void start(Stage stage) throws Exception {
@@ -28,7 +30,9 @@ public class Scheduler extends Application {
         Parent login = FXMLLoader.load(getClass().getResource("FXMLLoginPage.fxml"));
         Parent calendar = FXMLLoader.load(getClass().getResource("FXMLCalendarPage.fxml"));
         Parent appointmentDetails = FXMLLoader.load(getClass().getResource("FXMLAppointmentDetails.fxml"));
+        Parent editCustomer = FXMLLoader.load(getClass().getResource("FXMLEditCustomerInfo.fxml"));
         
+        editCustomerScene = new Scene(editCustomer);
         loginScene = new Scene(login);
         calendarScene = new Scene(calendar);
         appointmentDetailsScene = new Scene(appointmentDetails);

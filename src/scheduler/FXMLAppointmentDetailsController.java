@@ -2,7 +2,9 @@
 package scheduler;
 
 import java.net.URL;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
@@ -23,6 +25,7 @@ public class FXMLAppointmentDetailsController implements Initializable {
     private static Address address;
     private static Country country;
     private static int apptID;
+    private static boolean isNew = false;
     public static Label custName = new Label("Bacon");
     public static Label appointmentType = new Label("");
     public static Label cons = new Label("");
@@ -33,6 +36,7 @@ public class FXMLAppointmentDetailsController implements Initializable {
     public static Label end = new Label("");
     public static Label title = new Label("");
     public static MenuButton cInput;
+    private static Button eButton;
     public static TextField tInput;
     public static TextField dInput;
     public static TextField lInput;
@@ -110,15 +114,33 @@ public class FXMLAppointmentDetailsController implements Initializable {
     e2Input=endInput2;
     lInput = locationInput;
     dateInput = dateSelectorInput;
+    eButton = editButton;
     s1Input.setItems(FXCollections.observableArrayList(hourTimes));
     s2Input.setItems(FXCollections.observableArrayList(minuteTime));
     e1Input.setItems(FXCollections.observableArrayList(hourTimes));
     e2Input.setItems(FXCollections.observableArrayList(minuteTime));
     
     }
+    private static void clearFields(){
+    
+        appointmentType.setText("");
+        cons.setText("");
+        loc.setText("");
+        descr.setText("");
+        cont.setText("");
+        start.setText("");
+        end.setText("");
+        tInput.setText("");
+        dInput.setText("");
+        lInput.setText("");
+        title.setText("");
+        custName.setText("");
+        cInput.setText("");
+    }
    
 
-    public static void initAppointment(int ID){
+    public static void initAppointment(int ID){  
+        clearFields();
         cInput.setVisible(false);
         tInput.setVisible(false);
         dInput.setVisible(false);
@@ -127,7 +149,6 @@ public class FXMLAppointmentDetailsController implements Initializable {
         s2Input.setVisible(false);
         e2Input.setVisible(false);
         lInput.setVisible(false);
-
         
         apptID = ID;
         ArrayList<Appointment> appts = UserInfo.getAppointments();
@@ -158,18 +179,49 @@ public class FXMLAppointmentDetailsController implements Initializable {
                 country = cntry;
             }
         }
+      showInfo();
+      custName.setText(customer.getName());
+      cInput.setText(customer.getName());
+        }
+    public static void initNewAppt(LocalDate clickDate){
+        clearFields();
+        isNew = true;
+        cInput.setVisible(false);
+        tInput.setVisible(false);
+        dInput.setVisible(false);
+        s1Input.setVisible(false);
+        e1Input.setVisible(false);
+        s2Input.setVisible(false);
+        e2Input.setVisible(false);
+        lInput.setVisible(false);
+        ArrayList<Appointment> appts = UserInfo.getAppointments();
+        apptID = (appts.get((appts.size()-1)).getAppointmentID())+1;
+        
+        appointment = new Appointment();
+        appointment.setAppointmentID(apptID);
+        LocalDateTime newApptTime = clickDate.atTime(LocalTime.NOON);
+        
+        appointment.setStartTime(newApptTime);
+        appointment.setEndTime(newApptTime);
+        appointment.setConsultant(UserInfo.getUserName());
+        appointment.setTitle("New Appointment");
+        appointment.setDescription("Description");
+        appointment.setLocation("location");
+        showInfo();
+        eButton.fire();
+    }
+    private static void showInfo(){
         LocalDateTime apptStart = appointment.getStartTime();       
         String titleText = "AppointMent for ";
         titleText += apptStart.getMonth() + "," + Integer.toString(apptStart.getDayOfMonth()) + " " + apptStart.getYear();
-        title.setText(titleText);
-        custName.setText(customer.getName());
+        title.setText(titleText);        
         cInput.getItems().clear();
         for(Customer cust : UserInfo.customers){
             MenuItem nmi = new MenuItem(cust.getName());
             nmi.setId(Integer.toString(cust.getCustomerID()));            
             cInput.getItems().add(nmi);
             nmi.setOnAction(e -> setCustId(e));            
-        }        
+        }  
         appointmentType.setText(appointment.getTitle());
         cons.setText(appointment.getConsultant());
         loc.setText(appointment.getLocation());
@@ -182,17 +234,23 @@ public class FXMLAppointmentDetailsController implements Initializable {
         start.setText(startFormat);
         end.setText(endFormat);
         
-        cInput.setText(customer.getName());
+        
         tInput.setText(appointment.getTitle());
         dInput.setText(appointment.getDescription());
         lInput.setText(appointment.getLocation());
-        //sInput.setText("test");
-        //eInput.setText("test");
-        }
+    }
+    
     public void cancel(){
         editButton.setVisible(true);
         saveButton.setVisible(false);
-        Scheduler.changeScene(Scheduler.currentScene);        
+        FXMLCalendarPageController.setCalendar();
+        //Need to add weekly controller set calendar function here as well
+        Scheduler.changeScene(Scheduler.currentScene);
+        appointment = null;
+        customer = null;
+        address = null;
+        country = null;
+        city = null;
     }
     public void editAppt(){
         dateInput.setVisible(true);
@@ -229,7 +287,7 @@ public class FXMLAppointmentDetailsController implements Initializable {
         e1Input.getSelectionModel().select(endHour);
         e2Input.getSelectionModel().select(endMinute);
    }
-    public void saveAppt(){
+    public void saveAppt() throws ClassNotFoundException{
         dateInput.setVisible(false);
         title.setVisible(true);
         cInput.setVisible(false);
@@ -242,27 +300,35 @@ public class FXMLAppointmentDetailsController implements Initializable {
         lInput.setVisible(false);
         editButton.setVisible(true);
         saveButton.setVisible(false);
-        System.out.println(selectedMenuID);
+        if(isNew) {
+            UserInfo.addAppointment(appointment);
+        }
         appointment.setCustomerID(customer.getCustomerID());
         appointment.setContact(customer.getName());
         appointment.setTitle(tInput.getText());
         appointment.setLocation(lInput.getText());
-        appointment.setDescription(dInput.getText());        
-        initAppointment(apptID);
-        
+        appointment.setDescription(dInput.getText());
         DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd kk:mm");
         System.out.println("Date format is " + dateInput.getValue());
         String saveStartDate = dateInput.getValue().toString()+ " " + s1Input.getValue()+":"+s2Input.getValue();
         LocalDateTime saveStart = LocalDateTime.parse(saveStartDate, df);
         appointment.setStartTime(saveStart);
+        String saveEndDate = dateInput.getValue().toString() + " " + e1Input.getValue() + ":" + e2Input.getValue();
+        LocalDateTime saveEnd = LocalDateTime.parse(saveEndDate, df);
+        appointment.setEndTime(saveEnd);
+        if(isNew){
+            Database.saveNewAppointment(appointment);
+        } else {
+            Database.updateAppointment(appointment);
+        }
+        isNew = false;
+        initAppointment(apptID);
     }
     public static void setCustId(ActionEvent e){
         MenuItem mi = (MenuItem)e.getSource();        
-        selectedMenuID = Integer.parseInt(mi.getId());
-        System.out.println("Looking for " + selectedMenuID );
+        selectedMenuID = Integer.parseInt(mi.getId());        
         for(int i = 0; i < UserInfo.customers.size() ;i++){            
-            Customer custom = UserInfo.customers.get(i);
-            System.out.println("Checking " + custom.getName());
+            Customer custom = UserInfo.customers.get(i);            
             if(custom.getCustomerID() == selectedMenuID){
                 customer = custom;
             }

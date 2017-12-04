@@ -69,9 +69,7 @@ public class FXMLLoginPageController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         //Getting the locale from the machine. Tested this on Mac :)
-        language = Locale.getDefault().toString();
-        
-        
+        language = Locale.getDefault().toString();        
         
          if(language.equals("es_ES")){
             userNameLabel.setText("Nombre de usuario");

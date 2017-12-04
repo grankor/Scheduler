@@ -10,7 +10,7 @@ public class Country {
     
     public Country(int id, String cntry){
         countryId = id;
-        cntry = country;
+        country = cntry;
     }
     
     

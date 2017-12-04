@@ -128,6 +128,7 @@ public class Database {
                 int countryId = countryrs.getInt("countryId");
                 String country = countryrs.getString("country");
                 Country newCountry = new Country(countryId, country);
+                System.out.println("Adding country: " + newCountry.getCountry());
                 UserInfo.countries.add(newCountry);
                 }
                 apptrs.close();
@@ -150,7 +151,7 @@ public class Database {
             
             
     }
-    public void updateAppointment(Appointment appt) throws ClassNotFoundException{
+    public static void updateAppointment(Appointment appt) throws ClassNotFoundException{
             Connection conn = null;
             String driver = "com.mysql.jdbc.Driver";
             String db = Database.getDatabaseName();
@@ -162,15 +163,15 @@ public class Database {
                 conn = DriverManager.getConnection(url,user,pass);
                 Statement stmt = conn.createStatement();
                 
-                //Need to update this to save the appointment
-                ResultSet saveAppt = stmt.executeQuery("SELECT appointmentId,customerId,title,description,location,contact,url,start,end,createdBy FROM U01JJx.appointment");
-                
-                
-                saveAppt.close();
+                LocalDateTime saveStartDate = LocalDateTime.now();
+                stmt.executeUpdate("UPDATE U01JJx.appointment " +
+                            "SET  customerId='" + appt.getCustomerID()+"', title='"+appt.getTitle()+"', description="+ "'"+ appt.getDescription()+"',"+
+                            " location='"+appt.getLocation()+"', contact='"+appt.getContact()+"', " + 
+                            "start='"+ appt.getStartTime()+ "', end='"+appt.getEndTime()+"', "+
+                        " lastUpdate='" + saveStartDate.toString() + "', lastUpdateBy='"+UserInfo.getUserName()+"' " +
+                        "WHERE appointmentId="+ appt.getAppointmentID());
                 stmt.close();
                 conn.close();
-                
-                
                         } catch (SQLException e){
                             System.out.println("SQLException: "+e.getMessage());
                             System.out.println("SQLState: "+e.getSQLState());
@@ -178,5 +179,186 @@ public class Database {
                         }
             
             }
-    
+    public static void saveNewAppointment(Appointment appt) throws ClassNotFoundException{
+            Connection conn = null;
+            String driver = "com.mysql.jdbc.Driver";
+            String db = Database.getDatabaseName();
+            String url = "jdbc:mysql://52.206.157.109/" + db;
+            String user = Database.getUserName();
+            String pass = Database.getPassword();
+            try {
+                Class.forName(driver);
+                conn = DriverManager.getConnection(url,user,pass);
+                Statement stmt = conn.createStatement();
+                DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd kk:mm");
+                LocalDateTime saveStartDate = LocalDateTime.now();
+                stmt.executeUpdate("INSERT INTO U01JJx.appointment (appointmentId, customerId, title, description, location, contact, url, start, end, createDate, createdBy, lastUpdate, lastUpdateBy)\n" +
+                            "VALUES  (" + appt.getAppointmentID() +", " + appt.getCustomerID()+", '"+appt.getTitle()+"', "+ "'"+ appt.getDescription()+"',"+
+                            " '"+appt.getLocation()+"', '"+appt.getContact()+"', " + "'www.google.com',"+
+                            "'"+ appt.getStartTime()+ "','"+appt.getEndTime()+"', "+
+                        "'"+saveStartDate.toString() + "', '"+UserInfo.getUserName()+"', '"+saveStartDate.toString() + "', '"+UserInfo.getUserName()+"')");
+                stmt.close();
+                conn.close();
+                        } catch (SQLException e){
+                            System.out.println("SQLException: "+e.getMessage());
+                            System.out.println("SQLState: "+e.getSQLState());
+                            System.out.println("VendorError: "+e.getErrorCode());
+                        }           
+            }
+    public static void addNewCountry(Country cnty) throws ClassNotFoundException{
+        Connection conn = null;
+        String driver = "com.mysql.jdbc.Driver";
+        String db = Database.getDatabaseName();
+        String url = "jdbc:mysql://52.206.157.109/" + db;
+        String user = Database.getUserName();
+        String pass = Database.getPassword();
+        try {
+            Class.forName(driver);
+            conn = DriverManager.getConnection(url,user,pass);
+            Statement stmt = conn.createStatement();
+            DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd kk:mm");
+            LocalDateTime saveDate = LocalDateTime.now();
+            stmt.executeUpdate("INSERT INTO U01JJx.country (countryId, country, createDate, createdBy, lastUpdate, lastUpdateBy) " +
+                        "VALUES  (" + cnty.getCountryID() +", '"+cnty.getCountry()+"', '"+ saveDate+ "', '"+ UserInfo.getUserName()+ "', "+
+                    "'" +saveDate+ "', '"+ UserInfo.getUserName() + "')");
+            stmt.close();
+            conn.close();
+            } catch (SQLException e){
+                System.out.println("SQLException: "+e.getMessage());
+                System.out.println("SQLState: "+e.getSQLState());
+                System.out.println("VendorError: "+e.getErrorCode());
+            }      
+    }
+    public static void addNewCity(City cty) throws ClassNotFoundException{
+        Connection conn = null;
+        String driver = "com.mysql.jdbc.Driver";
+        String db = Database.getDatabaseName();
+        String url = "jdbc:mysql://52.206.157.109/" + db;
+        String user = Database.getUserName();
+        String pass = Database.getPassword();
+        try {
+            Class.forName(driver);
+            conn = DriverManager.getConnection(url,user,pass);
+            Statement stmt = conn.createStatement();
+            DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd kk:mm");
+            LocalDateTime saveDate = LocalDateTime.now();
+            stmt.executeUpdate("INSERT INTO U01JJx.city (cityId, city, countryId, createDate, createdBy, lastUpdate, lastUpdateBy) " +
+                        "VALUES  (" + cty.getCityID() +", '"+cty.getCity()+ "', "+ cty.getCountryID() +", '"+ saveDate+ "', '"+ UserInfo.getUserName()+ "', "+
+                    "'" +saveDate+ "', '"+ UserInfo.getUserName() + "')");
+            stmt.close();
+            conn.close();
+            } catch (SQLException e){
+                System.out.println("SQLException: "+e.getMessage());
+                System.out.println("SQLState: "+e.getSQLState());
+                System.out.println("VendorError: "+e.getErrorCode());
+            }
+    }
+    public static void addNewAddress(Address addr) throws ClassNotFoundException{
+        Connection conn = null;
+        String driver = "com.mysql.jdbc.Driver";
+        String db = Database.getDatabaseName();
+        String url = "jdbc:mysql://52.206.157.109/" + db;
+        String user = Database.getUserName();
+        String pass = Database.getPassword();
+        try {
+            Class.forName(driver);
+            conn = DriverManager.getConnection(url,user,pass);
+            Statement stmt = conn.createStatement();
+            DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd kk:mm");
+            LocalDateTime saveDate = LocalDateTime.now();
+            stmt.executeUpdate("INSERT INTO U01JJx.address (addressId, address, address2, cityid, postalCode, phone, createDate, createdBy, lastUpdate, lastUpdateBy) " +
+                        "VALUES  (" + addr.getId() +", '"+addr.getAddressOne()+ "', '"+ addr.getAddressTwo() + "', " + addr.getCity() +
+                    ", '" + addr.getPostalCode() + "', '" + addr.getPhoneNumber() +
+                    "', '"+ saveDate+ "', '"+ UserInfo.getUserName()+ "', '" +saveDate+ "', '"+ UserInfo.getUserName() + "')");
+            stmt.close();
+            conn.close();
+            } catch (SQLException e){
+                System.out.println("SQLException: "+e.getMessage());
+                System.out.println("SQLState: "+e.getSQLState());
+                System.out.println("VendorError: "+e.getErrorCode());
+            }
+    }
+    public static void updateAddress(Address addr) throws ClassNotFoundException{
+            Connection conn = null;
+            String driver = "com.mysql.jdbc.Driver";
+            String db = Database.getDatabaseName();
+            String url = "jdbc:mysql://52.206.157.109/" + db;
+            String user = Database.getUserName();
+            String pass = Database.getPassword();
+            try {
+                Class.forName(driver);
+                conn = DriverManager.getConnection(url,user,pass);
+                Statement stmt = conn.createStatement();
+                
+                LocalDateTime saveStartDate = LocalDateTime.now();
+                stmt.executeUpdate("UPDATE U01JJx.address " +
+                            "SET  address='" + addr.getAddressOne()+"', "+
+                                "address2='" + addr.getAddressTwo() + "', " + 
+                                "cityId=" + addr.getCity() + ", " + 
+                                "postalCode='" + addr.getPostalCode() + "', " + 
+                                "phone='" + addr.getPhoneNumber() + "', " + 
+                                "lastUpdate='" + saveStartDate + "', " + 
+                                "lastUpdateBy='" + UserInfo.getUserName() + "' " + 
+                        "WHERE addressId= "+ addr.getId());
+                stmt.close();
+                conn.close();
+                        } catch (SQLException e){
+                            System.out.println("SQLException: "+e.getMessage());
+                            System.out.println("SQLState: "+e.getSQLState());
+                            System.out.println("VendorError: "+e.getErrorCode());
+                        }            
+            
+    }
+    public static void addNewCustomer(Customer cust) throws ClassNotFoundException{
+        Connection conn = null;
+        String driver = "com.mysql.jdbc.Driver";
+        String db = Database.getDatabaseName();
+        String url = "jdbc:mysql://52.206.157.109/" + db;
+        String user = Database.getUserName();
+        String pass = Database.getPassword();
+        try {
+            Class.forName(driver);
+            conn = DriverManager.getConnection(url,user,pass);
+            Statement stmt = conn.createStatement();
+            DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd kk:mm");
+            LocalDateTime saveDate = LocalDateTime.now();
+            stmt.executeUpdate("INSERT INTO U01JJx.customer (customerId, customerName, addressId, active, createDate, createdBy, lastUpdate, lastUpdateBy) " +
+                        "VALUES  (" + cust.getCustomerID() +", '" + cust.getName() + "', "+ cust.getAddressID() + ", " + cust.getActive() + 
+                    ", '"+ saveDate+ "', '"+ UserInfo.getUserName()+ "', '" +saveDate+ "', '"+ UserInfo.getUserName() + "')");
+            stmt.close();
+            conn.close();
+            } catch (SQLException e){
+                System.out.println("SQLException: "+e.getMessage());
+                System.out.println("SQLState: "+e.getSQLState());
+                System.out.println("VendorError: "+e.getErrorCode());
+            }
+    }
+    public static void updateCustomer(Customer cust) throws ClassNotFoundException{
+            Connection conn = null;
+            String driver = "com.mysql.jdbc.Driver";
+            String db = Database.getDatabaseName();
+            String url = "jdbc:mysql://52.206.157.109/" + db;
+            String user = Database.getUserName();
+            String pass = Database.getPassword();
+            try {
+                Class.forName(driver);
+                conn = DriverManager.getConnection(url,user,pass);
+                Statement stmt = conn.createStatement();
+                
+                LocalDateTime saveStartDate = LocalDateTime.now();
+                stmt.executeUpdate("UPDATE U01JJx.customer " +
+                            "SET  customerName='" + cust.getName()+"', "+
+                                "addressId='" + cust.getAddressID() + "', " +    
+                                "lastUpdate='" + saveStartDate + "', " + 
+                                "lastUpdateBy='" + UserInfo.getUserName() + "' " + 
+                        "WHERE customerId= "+ cust.getCustomerID());
+                stmt.close();
+                conn.close();
+                        } catch (SQLException e){
+                            System.out.println("SQLException: "+e.getMessage());
+                            System.out.println("SQLState: "+e.getSQLState());
+                            System.out.println("VendorError: "+e.getErrorCode());
+                        } 
+    }
+ 
 }

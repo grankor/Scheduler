@@ -1,5 +1,6 @@
 package CalendarResources;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.YearMonth;
@@ -91,11 +92,15 @@ public class WorkingMonth {
     
     public int numberOfAppointmentsForDay(int thisDay){
         try{
-        DayOfMonth day = days.get(thisDay);
+        DayOfMonth day = days.get(thisDay);        
         return day.getNumberOfAppointments();
         } catch(Exception ex) {
             return 0;
         }
+    }
+    public LocalDate getDateofDay(int thisDay){
+        DayOfMonth day = days.get(thisDay);
+                return day.getdate();
     }
 }
 

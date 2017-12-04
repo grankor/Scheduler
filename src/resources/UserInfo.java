@@ -20,9 +20,8 @@ public final class UserInfo {
    public static void setAppointments(ArrayList<Appointment> appts){
        appointments = appts;
    }
-   public static boolean addAppointment(Appointment newAppointment){
-       //add functionality to add new appointment here
-       return true;
+   public static void addAppointment(Appointment newAppointment){
+        appointments.add(newAppointment);
    }
    public static boolean removeAppointment(int appointmentID){
        //add functionality to remove appoinement here

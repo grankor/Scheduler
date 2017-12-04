@@ -116,11 +116,12 @@
       <Button fx:id="previousMonth" layoutX="350.0" layoutY="12.0" mnemonicParsing="false" onAction="#prevMonth" text="&lt;-" /> 
       <Button fx:id="nextMonth" layoutX="618.0" layoutY="12.0" mnemonicParsing="false" onAction="#nextMonth" text="-&gt;" />
       <TextField fx:id="outputText" layoutX="158.0" layoutY="706.0" prefHeight="27.0" prefWidth="685.0" />
-      <Pane fx:id="dailyAppointments" layoutX="1002.0" layoutY="74.0" prefHeight="603.0" prefWidth="200.0" />
       <Label fx:id="appointmentsLabel" layoutX="1008.0" layoutY="47.0" prefHeight="27.0" prefWidth="200.0" text="Daily Appointments" textAlignment="CENTER" underline="true">
          <font>
             <Font size="20.0" />
          </font>
       </Label>
+      <Pane fx:id="dailyAppointments" layoutX="989.0" layoutY="88.0" prefHeight="630.0" prefWidth="228.0" />
+      <Button fx:id="editCustomers" layoutX="38.0" layoutY="12.0" mnemonicParsing="false" text="Edit Customers" />
    </children>
 </AnchorPane>
