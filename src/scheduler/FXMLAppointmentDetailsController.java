@@ -13,18 +13,21 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.control.Alert.AlertType;
 import javafx.stage.WindowEvent;
 import resources.*;
 
 
 public class FXMLAppointmentDetailsController implements Initializable {
 
-    private static Appointment appointment;
-    private static Customer customer;
-    private static City city;
-    private static Address address;
-    private static Country country;
+    private static Appointment appointment = null;
+    private static Customer customer = null;
+    private static City city = null;
+    private static Address address = null;
+    private static Country country = null;
     private static int apptID;
+    private static int dayOfMonth;
+    private static ArrayList<Appointment> dailyAppointments = new ArrayList<Appointment>();
     private static boolean isNew = false;
     public static Label custName = new Label("Bacon");
     public static Label appointmentType = new Label("");
@@ -139,7 +142,9 @@ public class FXMLAppointmentDetailsController implements Initializable {
     }
    
 
-    public static void initAppointment(int ID){  
+    public static void initAppointment(int ID, int day){
+        dayOfMonth = day;
+        dailyAppointments = FXMLCalendarPageController.month.getAppointmentsForDay(dayOfMonth);
         clearFields();
         cInput.setVisible(false);
         tInput.setVisible(false);
@@ -183,7 +188,9 @@ public class FXMLAppointmentDetailsController implements Initializable {
       custName.setText(customer.getName());
       cInput.setText(customer.getName());
         }
-    public static void initNewAppt(LocalDate clickDate){
+    public static void initNewAppt(LocalDate clickDate, int day){
+        dayOfMonth = day;
+        dailyAppointments = FXMLCalendarPageController.month.getAppointmentsForDay(dayOfMonth);        
         clearFields();
         isNew = true;
         cInput.setVisible(false);
@@ -288,41 +295,71 @@ public class FXMLAppointmentDetailsController implements Initializable {
         e2Input.getSelectionModel().select(endMinute);
    }
     public void saveAppt() throws ClassNotFoundException{
-        dateInput.setVisible(false);
-        title.setVisible(true);
-        cInput.setVisible(false);
-        tInput.setVisible(false);
-        dInput.setVisible(false);
-        s1Input.setVisible(false);
-        e1Input.setVisible(false);
-        s2Input.setVisible(false);
-        e2Input.setVisible(false);
-        lInput.setVisible(false);
-        editButton.setVisible(true);
-        saveButton.setVisible(false);
-        if(isNew) {
-            UserInfo.addAppointment(appointment);
+        if(customer == null){
+            Alert alert = new Alert(AlertType.ERROR, "Customer must be selected.");
+            alert.showAndWait();
+            return;
         }
-        appointment.setCustomerID(customer.getCustomerID());
-        appointment.setContact(customer.getName());
-        appointment.setTitle(tInput.getText());
-        appointment.setLocation(lInput.getText());
-        appointment.setDescription(dInput.getText());
         DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd kk:mm");
-        System.out.println("Date format is " + dateInput.getValue());
         String saveStartDate = dateInput.getValue().toString()+ " " + s1Input.getValue()+":"+s2Input.getValue();
         LocalDateTime saveStart = LocalDateTime.parse(saveStartDate, df);
-        appointment.setStartTime(saveStart);
         String saveEndDate = dateInput.getValue().toString() + " " + e1Input.getValue() + ":" + e2Input.getValue();
         LocalDateTime saveEnd = LocalDateTime.parse(saveEndDate, df);
-        appointment.setEndTime(saveEnd);
-        if(isNew){
-            Database.saveNewAppointment(appointment);
-        } else {
-            Database.updateAppointment(appointment);
+        LocalTime businessStart = UserInfo.getWorkingStart();
+        LocalTime businessEnd = UserInfo.getWorkingEnd();
+        for(Appointment appt : dailyAppointments){
+            if(saveStart.isAfter(appt.getStartTime()) && saveStart.isBefore(appt.getEndTime())){
+                Alert alert = new Alert(AlertType.ERROR, "Appoitment overlaps with " + appt.getContact() + " from " +
+                appt.getStartTime().toString() + " to " + appt.getEndTime().toString());
+                alert.showAndWait();
+                return;
+            }
+            if(saveEnd.isAfter(appt.getStartTime()) && saveEnd.isBefore(appt.getEndTime())){
+                Alert alert = new Alert(AlertType.ERROR, "Appoitment overlaps with " + appt.getContact() + " from " +
+                appt.getStartTime().toString() + " to " + appt.getEndTime().toString());
+                alert.showAndWait();
+                return;
+            }
+        }        
+        if(saveStart.toLocalTime().isBefore(businessStart)){
+            Alert alert = new Alert(AlertType.ERROR, "Earliest appointment can be is " + businessStart.toString());
+            alert.showAndWait();
+        } else{
+            if(saveEnd.toLocalTime().isAfter(businessEnd)){
+                Alert alert = new Alert(AlertType.ERROR, "Lastest appointment can be is " + businessEnd.toString());
+                alert.showAndWait();
+            } else {
+                dateInput.setVisible(false);
+                title.setVisible(true);
+                cInput.setVisible(false);
+                tInput.setVisible(false);
+                dInput.setVisible(false);
+                s1Input.setVisible(false);
+                e1Input.setVisible(false);
+                s2Input.setVisible(false);
+                e2Input.setVisible(false);
+                lInput.setVisible(false);
+                editButton.setVisible(true);
+                saveButton.setVisible(false);
+                if(isNew) {
+                    UserInfo.addAppointment(appointment);
+                    }
+                appointment.setCustomerID(customer.getCustomerID());
+                appointment.setContact(customer.getName());
+                appointment.setTitle(tInput.getText());
+                appointment.setLocation(lInput.getText());
+                appointment.setDescription(dInput.getText());
+                appointment.setStartTime(saveStart);        
+                appointment.setEndTime(saveEnd);
+                if(isNew){
+                    Database.saveNewAppointment(appointment);
+                    } else {
+                    Database.updateAppointment(appointment);
+                    }
+                isNew = false;
+                initAppointment(apptID, dayOfMonth);
+            }
         }
-        isNew = false;
-        initAppointment(apptID);
     }
     public static void setCustId(ActionEvent e){
         MenuItem mi = (MenuItem)e.getSource();        

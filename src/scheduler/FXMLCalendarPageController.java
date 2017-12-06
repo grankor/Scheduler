@@ -59,7 +59,9 @@ public class FXMLCalendarPageController implements Initializable {
     private static TextField outputTxt;
     private static Pane dlyAppts;
     
-    private static WorkingMonth month = new WorkingMonth(); 
+    public static ArrayList<Appointment> appointmentsForDay = new ArrayList();
+    
+    public static WorkingMonth month = new WorkingMonth(); 
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -116,7 +118,7 @@ public class FXMLCalendarPageController implements Initializable {
         Pane thisPane = (Pane)e.getSource();
         int day = Integer.parseInt(thisPane.getId());        
         dlyAppts.getChildren().clear();        
-        ArrayList<Appointment> todayAppt = month.getAppointmentsForDay(day);
+        ArrayList<Appointment> todayAppt = month.getAppointmentsForDay(day);        
         VBox buttonBox = new VBox();
         buttonBox.setSpacing(1);
         buttonBox.setPadding(new Insets(10 ,0,0,0));
@@ -134,26 +136,26 @@ public class FXMLCalendarPageController implements Initializable {
             
             anAppt.setId(Integer.toString(appt.getAppointmentID()));
             buttonBox.getChildren().add(anAppt);           
-            anAppt.setOnMouseClicked(ev -> apptClicked(ev));            
+            anAppt.setOnMouseClicked(ev -> apptClicked(ev, day));            
         }
         
         Button newAppt = new Button("New Appointment");         
-        newAppt.setOnMouseClicked( ev -> newAppointment(day));
+        newAppt.setOnMouseClicked( ev -> newAppointment(day, day));
         buttonBox.getChildren().add(newAppt);
         dlyAppts.getChildren().add(buttonBox);
     }
     
-    public static void apptClicked(Event ev){
+    public static void apptClicked(Event ev, int day){
         Button thisLabel = (Button)ev.getSource();
         int apptID = Integer.parseInt(thisLabel.getId());  
         Scheduler.changeScene(Scheduler.appointmentDetailsScene);
-        FXMLAppointmentDetailsController.initAppointment(apptID);
+        FXMLAppointmentDetailsController.initAppointment(apptID, day);
         
     }
-    public static void newAppointment(int d){
+    public static void newAppointment(int d, int day){
         Scheduler.changeScene(Scheduler.appointmentDetailsScene);
         LocalDate clickDate = month.getDateofDay((d-1));
-        FXMLAppointmentDetailsController.initNewAppt(clickDate);
+        FXMLAppointmentDetailsController.initNewAppt(clickDate, day);
     }
     
     public void nextMonth(){
