@@ -1,6 +1,8 @@
 
 package resources;
 
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 
 
@@ -13,6 +15,9 @@ public final class UserInfo {
    
    private static int userID;
    private static String userName;
+   // Setting working hours to 8:00 - 18:00  /  8:00am - 6:00pm
+   private static LocalTime workingHoursStart = LocalTime.of(8, 00);
+   private static LocalTime workingHoursEnd = LocalTime.of(18, 00);
    
    public static ArrayList<Appointment> getAppointments(){
        return appointments;

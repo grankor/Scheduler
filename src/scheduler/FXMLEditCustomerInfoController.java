@@ -463,10 +463,9 @@ public class FXMLEditCustomerInfoController implements Initializable {
             address=newAddress;
             UserInfo.addresses.add(newAddress);
             Database.addNewAddress(address);
-        } else {
-            int addressID = customer.getAddressID();
+        } else {            
             for(Address addr : UserInfo.addresses){
-                if(addr.getId()==addressID){
+                if(addr.getId()==selectedAddressID){
                     address = addr;
                 }
             }
