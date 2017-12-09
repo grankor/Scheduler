@@ -11,8 +11,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Time;
+import java.time.Clock;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -78,11 +80,22 @@ public class Database {
                     String startTimeString = apptrs.getString("start");
                     String createdBy = apptrs.getString("createdBy");
                     startTimeString = startTimeString.substring(0, 19);
-                    DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd kk:mm:ss");
+                    DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd kk:mm:ss");                    
+                    
+                    //Set appointments based on UTC
                     LocalDateTime ldtStart = LocalDateTime.parse(startTimeString, df);
+                    OffsetDateTime isUTC = OffsetDateTime.now(Clock.systemUTC());
+                    OffsetDateTime isNow = OffsetDateTime.now();
+                    OffsetDateTime osStart =ldtStart.atOffset(isUTC.getOffset());
+                    ldtStart = osStart.atZoneSameInstant(isNow.getOffset()).toLocalDateTime();
+                    
                     String endTime = apptrs.getString("end");
                     endTime = endTime.substring(0,19);
+                    
                     LocalDateTime ldtEnd = LocalDateTime.parse(endTime,df);
+                    OffsetDateTime osEnd = ldtEnd.atOffset(isUTC.getOffset());
+                    ldtEnd = osEnd.atZoneSameInstant(isNow.getOffset()).toLocalDateTime();
+                    
                     Appointment appt = new Appointment();
                     appt.setTitle(title);
                     appt.setURL(appUrl);
@@ -163,11 +176,26 @@ public class Database {
                 conn = DriverManager.getConnection(url,user,pass);
                 Statement stmt = conn.createStatement();
                 
-                LocalDateTime saveStartDate = LocalDateTime.now();
+                //Set appointments based on UTC
+                OffsetDateTime isUTC = OffsetDateTime.now(Clock.systemUTC());
+                OffsetDateTime isNow = OffsetDateTime.now();
+                OffsetDateTime osStart =appt.getStartTime().atOffset(isNow.getOffset());                
+                LocalDateTime start = osStart.atZoneSameInstant(isUTC.getOffset()).toLocalDateTime();
+                OffsetDateTime osEnd = appt.getEndTime().atOffset(isNow.getOffset());
+                LocalDateTime end = osEnd.atZoneSameInstant(isUTC.getOffset()).toLocalDateTime();
+                
+                System.out.println("start " + start);
+                System.out.println("OS Start " + osStart);
+                System.out.println("End " + end);
+                System.out.println("OS End " + osEnd);
+                
+                
+                LocalDateTime saveStartDate = OffsetDateTime.now(isUTC.getOffset()).toLocalDateTime();
+                
                 stmt.executeUpdate("UPDATE U01JJx.appointment " +
                             "SET  customerId='" + appt.getCustomerID()+"', title='"+appt.getTitle()+"', description="+ "'"+ appt.getDescription()+"',"+
                             " location='"+appt.getLocation()+"', contact='"+appt.getContact()+"', " + 
-                            "start='"+ appt.getStartTime()+ "', end='"+appt.getEndTime()+"', "+
+                            "start='"+ start + "', end='"+ end +"', "+
                         " lastUpdate='" + saveStartDate.toString() + "', lastUpdateBy='"+UserInfo.getUserName()+"' " +
                         "WHERE appointmentId="+ appt.getAppointmentID());
                 stmt.close();
@@ -191,11 +219,27 @@ public class Database {
                 conn = DriverManager.getConnection(url,user,pass);
                 Statement stmt = conn.createStatement();
                 DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd kk:mm");
-                LocalDateTime saveStartDate = LocalDateTime.now();
+               
+                
+                //Set appointments based on UTC
+                OffsetDateTime isUTC = OffsetDateTime.now(Clock.systemUTC());
+                OffsetDateTime isNow = OffsetDateTime.now();
+                OffsetDateTime osStart =appt.getStartTime().atOffset(isNow.getOffset());                
+                LocalDateTime start = osStart.atZoneSameInstant(isUTC.getOffset()).toLocalDateTime();
+                OffsetDateTime osEnd = appt.getEndTime().atOffset(isNow.getOffset());
+                LocalDateTime end = osEnd.atZoneSameInstant(isUTC.getOffset()).toLocalDateTime();
+                
+                System.out.println("start " + start);
+                System.out.println("OS Start " + osStart);
+                System.out.println("End " + end);
+                System.out.println("OS End " + osEnd);
+                
+                LocalDateTime saveStartDate = OffsetDateTime.now(isUTC.getOffset()).toLocalDateTime();
+                
                 stmt.executeUpdate("INSERT INTO U01JJx.appointment (appointmentId, customerId, title, description, location, contact, url, start, end, createDate, createdBy, lastUpdate, lastUpdateBy)\n" +
                             "VALUES  (" + appt.getAppointmentID() +", " + appt.getCustomerID()+", '"+appt.getTitle()+"', "+ "'"+ appt.getDescription()+"',"+
                             " '"+appt.getLocation()+"', '"+appt.getContact()+"', " + "'www.google.com',"+
-                            "'"+ appt.getStartTime()+ "','"+appt.getEndTime()+"', "+
+                            "'" + start + "','" + end + "', "+
                         "'"+saveStartDate.toString() + "', '"+UserInfo.getUserName()+"', '"+saveStartDate.toString() + "', '"+UserInfo.getUserName()+"')");
                 stmt.close();
                 conn.close();
@@ -217,7 +261,11 @@ public class Database {
             conn = DriverManager.getConnection(url,user,pass);
             Statement stmt = conn.createStatement();
             DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd kk:mm");
-            LocalDateTime saveDate = LocalDateTime.now();
+            
+            OffsetDateTime isUTC = OffsetDateTime.now(Clock.systemUTC());
+            LocalDateTime saveDate = OffsetDateTime.now(isUTC.getOffset()).toLocalDateTime();
+
+            
             stmt.executeUpdate("INSERT INTO U01JJx.country (countryId, country, createDate, createdBy, lastUpdate, lastUpdateBy) " +
                         "VALUES  (" + cnty.getCountryID() +", '"+cnty.getCountry()+"', '"+ saveDate+ "', '"+ UserInfo.getUserName()+ "', "+
                     "'" +saveDate+ "', '"+ UserInfo.getUserName() + "')");
@@ -241,7 +289,11 @@ public class Database {
             conn = DriverManager.getConnection(url,user,pass);
             Statement stmt = conn.createStatement();
             DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd kk:mm");
-            LocalDateTime saveDate = LocalDateTime.now();
+            
+            
+            OffsetDateTime isUTC = OffsetDateTime.now(Clock.systemUTC());
+            LocalDateTime saveDate = OffsetDateTime.now(isUTC.getOffset()).toLocalDateTime();
+            
             stmt.executeUpdate("INSERT INTO U01JJx.city (cityId, city, countryId, createDate, createdBy, lastUpdate, lastUpdateBy) " +
                         "VALUES  (" + cty.getCityID() +", '"+cty.getCity()+ "', "+ cty.getCountryID() +", '"+ saveDate+ "', '"+ UserInfo.getUserName()+ "', "+
                     "'" +saveDate+ "', '"+ UserInfo.getUserName() + "')");
@@ -265,7 +317,11 @@ public class Database {
             conn = DriverManager.getConnection(url,user,pass);
             Statement stmt = conn.createStatement();
             DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd kk:mm");
-            LocalDateTime saveDate = LocalDateTime.now();
+            
+            
+            OffsetDateTime isUTC = OffsetDateTime.now(Clock.systemUTC());
+            LocalDateTime saveDate = OffsetDateTime.now(isUTC.getOffset()).toLocalDateTime();
+            
             stmt.executeUpdate("INSERT INTO U01JJx.address (addressId, address, address2, cityid, postalCode, phone, createDate, createdBy, lastUpdate, lastUpdateBy) " +
                         "VALUES  (" + addr.getId() +", '"+addr.getAddressOne()+ "', '"+ addr.getAddressTwo() + "', " + addr.getCity() +
                     ", '" + addr.getPostalCode() + "', '" + addr.getPhoneNumber() +
@@ -290,7 +346,10 @@ public class Database {
                 conn = DriverManager.getConnection(url,user,pass);
                 Statement stmt = conn.createStatement();
                 
-                LocalDateTime saveStartDate = LocalDateTime.now();
+               
+            OffsetDateTime isUTC = OffsetDateTime.now(Clock.systemUTC());
+            LocalDateTime saveStartDate = OffsetDateTime.now(isUTC.getOffset()).toLocalDateTime();
+                
                 stmt.executeUpdate("UPDATE U01JJx.address " +
                             "SET  address='" + addr.getAddressOne()+"', "+
                                 "address2='" + addr.getAddressTwo() + "', " + 
@@ -321,7 +380,11 @@ public class Database {
             conn = DriverManager.getConnection(url,user,pass);
             Statement stmt = conn.createStatement();
             DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd kk:mm");
-            LocalDateTime saveDate = LocalDateTime.now();
+            
+            OffsetDateTime isUTC = OffsetDateTime.now(Clock.systemUTC());
+            LocalDateTime saveDate = OffsetDateTime.now(isUTC.getOffset()).toLocalDateTime();
+            
+            
             stmt.executeUpdate("INSERT INTO U01JJx.customer (customerId, customerName, addressId, active, createDate, createdBy, lastUpdate, lastUpdateBy) " +
                         "VALUES  (" + cust.getCustomerID() +", '" + cust.getName() + "', "+ cust.getAddressID() + ", " + cust.getActive() + 
                     ", '"+ saveDate+ "', '"+ UserInfo.getUserName()+ "', '" +saveDate+ "', '"+ UserInfo.getUserName() + "')");
@@ -344,8 +407,11 @@ public class Database {
                 Class.forName(driver);
                 conn = DriverManager.getConnection(url,user,pass);
                 Statement stmt = conn.createStatement();
+              
+                OffsetDateTime isUTC = OffsetDateTime.now(Clock.systemUTC());
+                 LocalDateTime saveStartDate = OffsetDateTime.now(isUTC.getOffset()).toLocalDateTime();
                 
-                LocalDateTime saveStartDate = LocalDateTime.now();
+                
                 stmt.executeUpdate("UPDATE U01JJx.customer " +
                             "SET  customerName='" + cust.getName()+"', "+
                                 "addressId='" + cust.getAddressID() + "', " +    

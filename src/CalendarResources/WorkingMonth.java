@@ -6,6 +6,8 @@ import java.time.OffsetDateTime;
 import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.Date;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import resources.Appointment;
 import resources.UserInfo;
 
@@ -15,9 +17,14 @@ public class WorkingMonth {
     private static Date endOfMonth;
     private static int numDaysInMonth;
     private static String month;
+    private static LocalDateTime loginTime = LocalDateTime.now();
+    private static LocalDateTime loginTimeInFifteen = loginTime.plusMinutes(15);
+    private static boolean notified = false;
+    
     public static LocalDateTime workingDate;
     public static YearMonth getThisMonth;
     public static String firstDay;
+    
     
     @Override
     public String toString(){
@@ -69,7 +76,7 @@ public class WorkingMonth {
         firstDay = getThisMonth.atDay(1).getDayOfWeek().toString().toLowerCase();
     }
     public static void initMonth(){
-        days.clear();
+        days.clear();        
         ArrayList<Appointment> appts = UserInfo.getAppointments();
         System.out.println("Attempting to add appointments...");
         System.out.println("Size of Array " + appts.size());
@@ -82,9 +89,20 @@ public class WorkingMonth {
             for(int x = 0; x < appts.size();x++) {
                 Appointment appt = appts.get(x);
                 if(appt.getStartTime().getMonth() == day.getdate().getMonth() && appt.getStartTime().getDayOfMonth() == day.getdate().getDayOfMonth()){
-                    System.out.println("Appoiuntment added for " + day.getdate().getDayOfMonth());                
                     day.addDailyAppointment(appt);
                 }
+                //Checks to see if there is an appointment soon.
+                if(!notified){
+                if(loginTime.isBefore(appt.getStartTime()) && loginTimeInFifteen.isAfter(appt.getStartTime())){
+                    if(appt.getConsultant().equals(UserInfo.getUserName())){
+                    Alert alert = new Alert(AlertType.ERROR, "Appointment with " + appt.getContact() + " coming up at " + appt.getStartTime().getHour()+ 
+                        ":" + appt.getStartTime().getMinute());
+                     alert.showAndWait();
+                     notified = true;
+                    }
+                }
+                }
+
             }
             days.add(day);
         }

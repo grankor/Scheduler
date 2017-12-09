@@ -9,6 +9,12 @@ import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 import java.net.URL;
 import java.sql.*;
 import java.sql.SQLException;
+import java.time.Clock;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -70,6 +76,11 @@ public class FXMLLoginPageController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         //Getting the locale from the machine. Tested this on Mac :)
         language = Locale.getDefault().toString();        
+        
+        OffsetDateTime isUTC = OffsetDateTime.now(Clock.systemUTC());
+        LocalDateTime saveStartDate = OffsetDateTime.now(isUTC.getOffset()).toLocalDateTime();
+        System.out.println(saveStartDate);
+        
         
          if(language.equals("es_ES")){
             userNameLabel.setText("Nombre de usuario");

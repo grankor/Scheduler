@@ -307,6 +307,11 @@ public class FXMLAppointmentDetailsController implements Initializable {
         LocalDateTime saveEnd = LocalDateTime.parse(saveEndDate, df);
         LocalTime businessStart = UserInfo.getWorkingStart();
         LocalTime businessEnd = UserInfo.getWorkingEnd();
+        if(saveStart.isAfter(saveEnd)){
+            Alert alert = new Alert(AlertType.ERROR, "Appoitment start must be before End.");
+            alert.showAndWait();
+            return;
+        }
         for(Appointment appt : dailyAppointments){
             if(saveStart.isAfter(appt.getStartTime()) && saveStart.isBefore(appt.getEndTime())){
                 Alert alert = new Alert(AlertType.ERROR, "Appoitment overlaps with " + appt.getContact() + " from " +
