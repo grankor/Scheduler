@@ -22,6 +22,8 @@ public class Scheduler extends Application {
     public static Scene appointmentDetailsScene;
     public static Scene editCustomerScene;
     public static Scene currentScene;
+    public static Scene reportsScene;
+    public static Scene weekScene;
     
     
     @Override
@@ -31,11 +33,15 @@ public class Scheduler extends Application {
         Parent calendar = FXMLLoader.load(getClass().getResource("FXMLCalendarPage.fxml"));
         Parent appointmentDetails = FXMLLoader.load(getClass().getResource("FXMLAppointmentDetails.fxml"));
         Parent editCustomer = FXMLLoader.load(getClass().getResource("FXMLEditCustomerInfo.fxml"));
+        Parent reports = FXMLLoader.load(getClass().getResource("FXMLReportsPage.fxml"));
+        Parent week = FXMLLoader.load(getClass().getResource("FXMLWeekPage.fxml"));
         
         editCustomerScene = new Scene(editCustomer);
         loginScene = new Scene(login);
         calendarScene = new Scene(calendar);
         appointmentDetailsScene = new Scene(appointmentDetails);
+        reportsScene = new Scene(reports);
+        weekScene = new Scene(week);
                 
         stage.setScene(loginScene);
         stage.show();

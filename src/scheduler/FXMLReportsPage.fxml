@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+
+<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8" fx:controller="scheduler.FXMLReportsPageController">
+   <children>
+      <Button fx:id="printNumOfApptTypes" layoutX="217.0" layoutY="150.0" mnemonicParsing="false" text="Number of Appointment Types" />
+      <Button fx:id="printNumOfApptsPerConsultant" layoutX="221.0" layoutY="189.0" mnemonicParsing="false" text="Appointments Per Consultant" />
+      <Button fx:id="printApptsPerCustomer" layoutX="225.0" layoutY="224.0" mnemonicParsing="false" text="Appointments Per Customer" />
+      <Button fx:id="backButton" layoutX="237.0" layoutY="338.0" mnemonicParsing="false" text="Back to Calendar" />
+      <Label fx:id="label" alignment="CENTER" layoutX="182.0" layoutY="26.0" prefHeight="17.0" prefWidth="277.0" text="Reports Title">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+      <Label layoutX="219.0" layoutY="64.0" prefHeight="70.0" prefWidth="240.0" text="Click on the button to export a CSV file to your computer. It will be in the base folder of your program" textAlignment="CENTER" wrapText="true" />
+   </children>
+</AnchorPane>

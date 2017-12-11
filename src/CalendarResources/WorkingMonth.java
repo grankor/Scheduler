@@ -58,8 +58,6 @@ public class WorkingMonth {
         days = newDays;
     }
     public static ArrayList<Appointment> getAppointmentsForDay(int id){
-        System.out.println("Getting " + id);
-        //decrement 1 to translate to array
         ArrayList<Appointment> appts = days.get((id-1)).getDailyAppointments();
         return appts;
     }
@@ -67,27 +65,25 @@ public class WorkingMonth {
          return workingDate;
     }
     public static void setWorkingDate(LocalDateTime wd){
-        workingDate = wd;
-       // System.out.println("Month sent " + wd);
-        //System.out.println("Month set " + workingDate.getMonth());
-        numDaysInMonth = workingDate.getMonth().maxLength();
-        //System.out.println(numDaysInMonth);
+        workingDate = wd;   
+        //Check to see if leap year
+        numDaysInMonth = workingDate.getMonth().length(workingDate.toLocalDate().isLeapYear());
         getThisMonth = YearMonth.of(workingDate.getYear(), workingDate.getMonth());
         firstDay = getThisMonth.atDay(1).getDayOfWeek().toString().toLowerCase();
     }
     public static void initMonth(){
         days.clear();        
         ArrayList<Appointment> appts = UserInfo.getAppointments();
-        System.out.println("Attempting to add appointments...");
-        System.out.println("Size of Array " + appts.size());
         if(appts == null){ return;}
 
         for(int i=0; i < numDaysInMonth; i++){
+            if(!workingDate.toLocalDate().isLeapYear() &&  (workingDate.getMonthValue() == 2) && (i==29)){ return;}
             DayOfMonth day = new DayOfMonth();
             day.setDayOfMonth((i+1));
             day.setDate(getThisMonth.atDay((i+1)));
             for(int x = 0; x < appts.size();x++) {
                 Appointment appt = appts.get(x);
+                if(appt.getStartTime().getYear() == workingDate.getYear()){
                 if(appt.getStartTime().getMonth() == day.getdate().getMonth() && appt.getStartTime().getDayOfMonth() == day.getdate().getDayOfMonth()){
                     day.addDailyAppointment(appt);
                 }
@@ -102,7 +98,7 @@ public class WorkingMonth {
                     }
                 }
                 }
-
+                }
             }
             days.add(day);
         }

@@ -6,6 +6,12 @@
 package scheduler;
 
 import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.net.URL;
 import java.sql.*;
 import java.sql.SQLException;
@@ -47,7 +53,7 @@ public class FXMLLoginPageController implements Initializable {
     private Button loginButton;
     
     @FXML
-    private void login (ActionEvent event) throws NamingException, SQLException, ClassNotFoundException{
+    private void login (ActionEvent event) throws NamingException, SQLException, ClassNotFoundException, IOException{
         String uname = userName.textProperty().getValue();
         String pword = userPW.textProperty().getValue();
         if(uname.equals("") && pword.equals("")){
@@ -60,9 +66,9 @@ public class FXMLLoginPageController implements Initializable {
 
         if(checkDatabase(uname, pword)){    
             System.out.println("Login Successful!");
+            writeToLoginLog();
             Database.getDatabaseInformation();
-            //Moving this after database call
-            //Scheduler.changeScene(Scheduler.calendarScene);
+            
         }else{
             if(language.equals("es_ES")){
                 loginProblem("Nombre de usuario o contraseña incorrecta.");
@@ -70,6 +76,32 @@ public class FXMLLoginPageController implements Initializable {
             loginProblem("Incorrect Username or Password");
             }
         }
+    }
+    
+    private void writeToLoginLog() throws IOException{
+        String timeStamp = LocalDateTime.now().toString();
+        timeStamp += " - " + UserInfo.getUserName() + "\n";
+        FileWriter fw = null;
+        try{
+            System.out.println("Writing new");
+            fw = new FileWriter("loginLog.txt", true);
+            BufferedWriter out = new BufferedWriter(fw);
+            out.write(timeStamp);
+            out.newLine();
+            out.close();
+        } catch (Exception ev){
+            System.out.println("Appending");
+            fw = new FileWriter("loginLog.txt", true);
+            fw.append(timeStamp);
+        
+        }finally{
+            try{
+            fw.close();
+            } catch (Exception ex){
+            
+            }
+        }
+        
     }
     
     @Override
@@ -137,7 +169,7 @@ public class FXMLLoginPageController implements Initializable {
              }
         return false;
     }
-    public void onEnter(ActionEvent e) throws NamingException, SQLException, ClassNotFoundException{        
+    public void onEnter(ActionEvent e) throws NamingException, SQLException, ClassNotFoundException, IOException{        
         login(e);    
     }
     

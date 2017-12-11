@@ -35,7 +35,6 @@ public class DayOfMonth {
         dailyAppointments = newDailyAppointments;
     }
     public void addDailyAppointment(Appointment appt){
-        System.out.println("Attempting to add " + appt.toString());
         dailyAppointments.add(appt);
     }
 }

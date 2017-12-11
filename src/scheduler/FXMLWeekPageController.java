@@ -1,4 +1,8 @@
-
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package scheduler;
 
 import java.net.URL;
@@ -32,11 +36,14 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import resources.Appointment;
 import resources.UserInfo;
+/**
+ * FXML Controller class
+ *
+ * @author nicholasdrew
+ */
+public class FXMLWeekPageController implements Initializable {
 
-
-public class FXMLCalendarPageController implements Initializable {
-
-    @FXML
+@FXML
     private GridPane calendarGrid;
     @FXML
     private Label monthLabel;
@@ -48,10 +55,10 @@ public class FXMLCalendarPageController implements Initializable {
     private Pane dailyAppointments;
     @FXML
     private Button editCustomers;
-    @FXML
+    @FXML    
     private Button report;
-    @FXML 
-    private Button week;
+    @FXML
+    private Button changeToMonth;
     
     private static GridPane calGrid;
     private static Label mntLabel;
@@ -60,21 +67,23 @@ public class FXMLCalendarPageController implements Initializable {
     private static Button editCustomersButton;
     private static Button reports;
     private static Pane dlyAppts;
-    private static Button switchToWeek;
+    private static Button monthView;
+    
+    private static LocalDateTime startOfWeek;
+    private static LocalDateTime endOfWeek;
+    
+    private static int startDay;
+    private static int incrementDay;
+    private static int startOfNextWeek;
     
     public static ArrayList<Appointment> appointmentsForDay = new ArrayList();
     
-    public static WorkingMonth month = new WorkingMonth(); 
-    
-    private static void weekView(){
-        FXMLWeekPageController.setCalendar();
-        Scheduler.currentScene = Scheduler.weekScene;
-        Scheduler.changeScene(Scheduler.weekScene);
-    }
+    public static WorkingWeek month = new WorkingWeek();
+    private static LocalDateTime monthCompare = null;
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        switchToWeek = week;
+        monthView = changeToMonth;
         reports = report;
         calGrid = calendarGrid;
         mntLabel = monthLabel;
@@ -85,9 +94,22 @@ public class FXMLCalendarPageController implements Initializable {
         editCustomersButton.setOnMouseClicked(e -> editCustomer());
         month.setWorkingDate(LocalDateTime.now());
         reports.setOnMouseClicked(e -> printReports());
-        switchToWeek.setOnMouseClicked(e -> weekView());
+        monthView.setOnMouseClicked(e -> changeToMonthView());
         setCalendar();
-            }
+ 
+        monthCompare = LocalDateTime.now();
+        
+        int dom = month.workingDate.getDayOfMonth();
+        LocalDateTime firstDayOfMonth = month.workingDate.minusDays((dom-1));
+        month.setWorkingDate(firstDayOfMonth);
+    }
+    
+    private static void changeToMonthView(){
+        FXMLCalendarPageController.setCalendar();
+        Scheduler.currentScene = Scheduler.calendarScene;
+        Scheduler.changeScene(Scheduler.calendarScene);
+    }
+    
     private static void editCustomer(){
         FXMLEditCustomerInfoController.loadCustomers();
         Scheduler.changeScene(Scheduler.editCustomerScene);
@@ -99,24 +121,22 @@ public class FXMLCalendarPageController implements Initializable {
     }
     
     public static void setCalendar(){
-        month.initMonth();
+        startOfNextWeek = 0;
         dlyAppts.getChildren().clear();
-        mntLabel.setText("" + month.workingDate.getMonth() + " - " + month.workingDate.getYear());
-        //outputTxt.setText("" + month.firstDay);
-        for(int i=0; i < 42;i++){
+        mntLabel.setText("" + month.workingDate.getMonth() + " - " + month.workingDate.getYear());        
+        for(int i=0; i < 7;i++){
             Pane spot = (Pane)calGrid.getChildren().get(i);
             spot.getChildren().clear();
             spot.setId(null);
         }
-        int startDay = checkDayOfWeek(month.firstDay);
-        int incDay = 1;
-                
-        if(UserInfo.getAppointments() != null){
+        startDay = checkDayOfWeek(month.firstDay);
+        incrementDay = 1;
+            if(UserInfo.getAppointments() != null){
             month.initMonth();
-        }        
-        for(int i = startDay; i < (month.getNumDaysInMonth()+startDay) ; i++){
+            }        
+        for(int i = startDay; i < 7 ; i++){
             
-            Label dayNum = new Label("" + (incDay));
+            Label dayNum = new Label("" + (incrementDay));
             Label numOfAppts = new Label();
             int numAppts = month.numberOfAppointmentsForDay((i-startDay));
             if (numAppts > 0){
@@ -126,11 +146,69 @@ public class FXMLCalendarPageController implements Initializable {
             Pane spot = (Pane)calGrid.getChildren().get(i);
             spot.getChildren().add(dayNum);
             spot.getChildren().add(numOfAppts);
-            spot.setId(Integer.toString(incDay));            
+            spot.setId(Integer.toString(incrementDay));            
             spot.setOnMouseClicked(e -> clicked(e));
-            incDay++;
-        }        
+            incrementDay++;
+        }
+        //startDay = 8;
     }
+        public static void nextWeek(){        
+        mntLabel.setText("" + month.workingDate.getMonth() + " - " + month.workingDate.getYear());
+        if(month.workingDate.getMonth().equals(monthCompare.getMonth())){
+            incrementDay = startOfNextWeek+1;            
+            writeCalendar();
+        }
+        else {
+            monthCompare = month.workingDate;            
+            setCalendar();
+        }
+        startOfNextWeek += 7;
+    }
+        public static void previousWeek(){
+        mntLabel.setText("" + month.workingDate.getMonth() + " - " + month.workingDate.getYear());
+        if(month.workingDate.getMonth().equals(monthCompare.getMonth())){
+            incrementDay = startOfNextWeek+1;            
+            writeCalendar();
+        }
+        else {
+            monthCompare = month.workingDate;             
+            setCalendar();
+        }
+        startOfNextWeek -= 7;
+        }
+    
+    private static void writeCalendar(){
+        dlyAppts.getChildren().clear();
+        for(int i=0; i < 7;i++){
+            Pane spot = (Pane)calGrid.getChildren().get(i);
+            spot.getChildren().clear();
+            spot.setId(null);
+        }
+        
+        if(UserInfo.getAppointments() != null){
+            month.initMonth();
+            }
+            int id = 0;
+        for(int i = startOfNextWeek; i < (startOfNextWeek+7) ; i++){
+            
+            Label dayNum = new Label("" + (incrementDay));
+            Label numOfAppts = new Label();
+            int numAppts = month.numberOfAppointmentsForDay((incrementDay-1));
+            if (numAppts > 0){
+            numOfAppts.setText("Appointments: " + numAppts);
+            }
+            numOfAppts.setStyle("-fx-padding: 12 0 0 2;");
+            Pane spot = (Pane)calGrid.getChildren().get(id);
+            spot.getChildren().add(dayNum);
+            spot.getChildren().add(numOfAppts);
+            spot.setId(Integer.toString(incrementDay));            
+            spot.setOnMouseClicked(e -> clicked(e));
+            incrementDay++;
+            id++;
+        } 
+        
+    }  
+    
     
     private static void clicked(Event e){
         Pane thisPane = (Pane)e.getSource();
@@ -177,34 +255,43 @@ public class FXMLCalendarPageController implements Initializable {
     }
     
     public void nextMonth(){
-        LocalDateTime temp = month.workingDate.plusMonths(1);
+        LocalDateTime temp = month.workingDate.plusWeeks(1);
+        System.out.println("Moving to date - " + temp);
         month.setWorkingDate(temp);        
-        setCalendar();
+        nextWeek();
     }
     public void prevMonth(){
-        LocalDateTime temp = month.workingDate.minusMonths(1);
+        LocalDateTime temp = month.workingDate.minusWeeks(1);
+        System.out.println("Moving to date - " + temp);
         month.setWorkingDate(temp);
-        setCalendar();
+        previousWeek();
     }
     private static int checkDayOfWeek(String dayOfWeek){
         switch(dayOfWeek){
-            case "sunday": 
+            case "sunday":
+                startOfNextWeek = 7;
                 return 0;               
             case "monday":
+                startOfNextWeek = 6;
                 return 1;
             case "tuesday":
+                startOfNextWeek = 5;
                 return 2;
             case "wednesday":
+                startOfNextWeek = 4;
                 return 3;
             case "thursday":
+                startOfNextWeek = 3;
                 return 4;
             case "friday":
+                startOfNextWeek = 2;
                 return 5;
             case "saturday":
+                startOfNextWeek = 1;
                 return 6;
             default:
                 return 0;               
         }
-    }
+    }   
     
 }
